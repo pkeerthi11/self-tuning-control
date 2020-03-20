@@ -1,0 +1,6 @@
+.gitignore
+**/*.png
+**/*.svg
+plots_article
+simulation_results/results_*
+simulation_results_article
