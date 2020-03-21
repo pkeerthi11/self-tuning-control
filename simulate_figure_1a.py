@@ -4,7 +4,7 @@ import pickle
 import itertools
 import scipy.signal as signal
 
-from main import single_simulation, constants_nevado_holgado_healthy
+from simulation import single_simulation, constants_nevado_holgado_healthy
 from controller import ZeroController
 
 
@@ -14,13 +14,8 @@ if __name__ == '__main__':
     constants[14] = 8
     constants[15] = -139.4
 
-    max_delay = max(constants[6:10])
     simulation_time = 2000
     dt = 0.5
-
-    tt = np.arange(-max_delay, simulation_time, dt)
-    history = np.zeros((len(tt), 3))
-    control_history = np.zeros((len(tt),))
 
     c12_range = np.arange(0, -4, -0.125)
     c21_range = np.arange(0, 32, 1)
@@ -34,12 +29,11 @@ if __name__ == '__main__':
         print('Running simulations for c12=%.2f, c21=%.2f' % (c12, c21))
         constants[3] = c12
         constants[4] = c21
-        history = single_simulation(constants, max_delay, simulation_time, dt, z, plot=False)
+        history = single_simulation(constants, simulation_time, dt, z)
 
         div = 10
-        dtt = tt[::div]
         dhistory = signal.decimate(history, div, axis=0)
-        fs = 1000/(dtt[1]-dtt[0])
+        fs = 1000/(dt * div)
         nyq = fs / 2
         b, a = signal.butter(5, [16/nyq, 24/nyq], btype='band')
         sstn = signal.filtfilt(b, a, dhistory[:, 0])

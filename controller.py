@@ -1,5 +1,5 @@
 import numpy as np
-import main as sim
+import simulation as sim
 import scipy.signal as signal
 
 

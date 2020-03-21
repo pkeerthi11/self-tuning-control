@@ -1,6 +1,6 @@
 import numpy as np
 import pickle
-import main as sim
+import simulation as sim
 import controller as ctrl
 
 
@@ -13,12 +13,10 @@ if __name__ == '__main__':
     constants[17] = 20
     constants[18] = 50
 
-    max_delay = max(constants[6:10])
     simulation_time = 3000
     dt = 0.01
 
     print('Simulations')
-    tt = np.arange(-max_delay, simulation_time, dt)
     sigma = 0.01
     mi = 10
     mia = 50
@@ -27,16 +25,13 @@ if __name__ == '__main__':
     prop_theta = 25
 
     p_controller = ctrl.ProportionalController(gain=prop_theta, dt=dt)
-    pi_controller = ctrl.ProportionalIntegralController(proportional_gain=prop_theta, integral_gain=prop_theta/2,
-                                                        dt=dt)
     a_controller = ctrl.AdaptiveController(sigma=sigma, tau_theta=tau_theta, dt=dt)
-    history_adaptive = sim.single_simulation(constants, max_delay, simulation_time, dt, control_mechanism=a_controller,
+    history_adaptive = sim.single_simulation(constants, simulation_time, dt, control_mechanism=a_controller,
                                              init_theta=it, mid_increase=mi, mid_increase_amplitude=mia,
-                                             steady_state_pad=steady_state_pad, plot=False)
-    history_proportional = sim.single_simulation(constants, max_delay, simulation_time, dt,
-                                                 control_mechanism=p_controller, init_theta=prop_theta, mid_increase=mi,
-                                                 mid_increase_amplitude=mia, steady_state_pad=steady_state_pad,
-                                                 plot=False)
+                                             steady_state_pad=steady_state_pad)
+    history_proportional = sim.single_simulation(constants, simulation_time, dt, control_mechanism=p_controller,
+                                                 init_theta=prop_theta, mid_increase=mi, mid_increase_amplitude=mia,
+                                                 steady_state_pad=steady_state_pad)
 
     print('Saving simulation results')
     with open('simulation_results/results_figure_4', 'wb+') as f:
