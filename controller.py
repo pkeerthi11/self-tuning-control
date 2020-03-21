@@ -68,9 +68,9 @@ class AdaptiveController(Controller):
     def __call__(self, history):
         state = history[-1]
         gain = state[2]
-        input = -gain * self.error_signal(state)
+        control_input = -gain * self.error_signal(state)
         self._update_w(state)
-        return input, self.grad_theta(history)
+        return control_input, self.grad_theta(history)
 
 
 class AdaptiveControllerFilter(AdaptiveController):
@@ -104,6 +104,6 @@ class AdaptiveControllerFilter(AdaptiveController):
             return 0, 0
         else:
             gain = last_state[2]
-            input = -gain * (last_state[0] - self.w)
+            control_input = -gain * (last_state[0] - self.w)
             self._update_w(last_state)
-            return input, self.grad_theta(history)
+            return control_input, self.grad_theta(history)
