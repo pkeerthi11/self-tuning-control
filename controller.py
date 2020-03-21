@@ -1,6 +1,7 @@
 import numpy as np
-import simulation as sim
 import scipy.signal as signal
+
+import simulation as sim
 
 
 def rect(x):
@@ -50,7 +51,7 @@ class ProportionalControllerWithHistory(Controller):
         self.gain = gain
         self.w = 0
         self.omega = omega
-        self.dt = tt[1]-tt[0]
+        self.dt = tt[1] - tt[0]
         self.e_history = np.zeros(tt.shape)
         self.w_history = np.zeros(tt.shape)
         self.c_history = np.zeros(tt.shape)
@@ -84,7 +85,7 @@ class ProportionalAdaptiveControllerWithHistory(Controller):
         self.tau_theta = tau_theta
         self.w = 0
         self.omega = omega
-        self.dt = tt[1]-tt[0]
+        self.dt = tt[1] - tt[0]
         self.e_history = np.zeros(tt.shape)
         self.w_history = np.zeros(tt.shape)
         self.c_history = np.zeros(tt.shape)
@@ -192,7 +193,7 @@ class AdaptiveControllerFilter(AdaptiveController):
         # hig = 30 / nyq
         # b, a = signal.cheby1(5, 0.1, [low, hig], 'bandpass')
         # f_s10 = signal.filtfilt(b, a, s10)
-        e = np.ptp(sim.butter_bandpass_filter(s10, 15, 30, 100/self.dt, 5))
+        e = np.ptp(sim.butter_bandpass_filter(s10, 15, 30, 100 / self.dt, 5))
         if e < self.deadzone:
             return 0
         else:

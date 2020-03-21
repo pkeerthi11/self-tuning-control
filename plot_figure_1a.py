@@ -1,7 +1,8 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import pickle
 import pathlib
+import pickle
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 if __name__ == '__main__':
     fpath = pathlib.Path('simulation_results/results_figure_1a')

@@ -1,7 +1,8 @@
 import math
-import numpy as np
 import pickle
+
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def plot_controller_comparison(filename, prefix, ylim=None):
@@ -62,8 +63,8 @@ def plot_controller_comparison(filename, prefix, ylim=None):
 
     x0 = res['proportional'][:ts, 0]
     x1 = res['proportional'][:ts, 1]
-    ia0 = np.array([np.ptp(x0[i:i+ialen]) for i in range(ts - ialen)])
-    ia1 = np.array([np.ptp(x1[i:i+ialen]) for i in range(ts - ialen)])
+    ia0 = np.array([np.ptp(x0[i:i + ialen]) for i in range(ts - ialen)])
+    ia1 = np.array([np.ptp(x1[i:i + ialen]) for i in range(ts - ialen)])
     ax7.set_title('Instantaneous amplitude; proportional control')
     ax7.plot(tt, ia0)
     ax7.plot(tt, ia1)

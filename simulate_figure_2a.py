@@ -1,10 +1,10 @@
-import numpy as np
-from math import ceil
 import pickle
+from math import ceil
 
-from simulation import single_simulation, constants_nevado_holgado_healthy
+import numpy as np
+
 from controller import ZeroController, AdaptiveControllerFilter
-
+from simulation import single_simulation, constants_nevado_holgado_healthy
 
 if __name__ == "__main__":
     constants = constants_nevado_holgado_healthy
@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
             h2 = single_simulation(constants, simulation_time, dt, control_mechanism=z)
             h3 = single_simulation(constants, simulation_time, dt, control_mechanism=a, init_theta=0)
-            tail_length = int(ceil(800/dt))
+            tail_length = int(ceil(800 / dt))
             stn_amplitude[i, ci, 1] = np.ptp(h2[-tail_length:, 0])
             stn_amplitude[i, ci, 2] = np.ptp(h3[-tail_length:, 0])
             gpe_amplitude[i, ci, 1] = np.ptp(h2[-tail_length:, 1])

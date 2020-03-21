@@ -1,12 +1,12 @@
-import numpy as np
-from math import ceil, floor
-import pickle
 import itertools
+import pickle
+from math import ceil, floor
+
+import numpy as np
 import scipy.signal as signal
 
-from simulation import single_simulation, constants_nevado_holgado_healthy
 from controller import ZeroController
-
+from simulation import single_simulation, constants_nevado_holgado_healthy
 
 if __name__ == '__main__':
     constants = constants_nevado_holgado_healthy
@@ -33,14 +33,14 @@ if __name__ == '__main__':
 
         div = 10
         dhistory = signal.decimate(history, div, axis=0)
-        fs = 1000/(dt * div)
+        fs = 1000 / (dt * div)
         nyq = fs / 2
-        b, a = signal.butter(5, [16/nyq, 24/nyq], btype='band')
+        b, a = signal.butter(5, [16 / nyq, 24 / nyq], btype='band')
         sstn = signal.filtfilt(b, a, dhistory[:, 0])
         sgpe = signal.filtfilt(b, a, dhistory[:, 1])
 
-        stn_amplitude[i, j] = np.ptp(sstn[-int(floor(tail_len/div)):])
-        gpe_amplitude[i, j] = np.ptp(sgpe[-int(floor(tail_len/div)):])
+        stn_amplitude[i, j] = np.ptp(sstn[-int(floor(tail_len / div)):])
+        gpe_amplitude[i, j] = np.ptp(sgpe[-int(floor(tail_len / div)):])
 
         with open('simulation_results/results_figure_1a', 'wb+') as results_file:
             pickle.dump({

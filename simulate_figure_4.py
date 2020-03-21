@@ -1,8 +1,7 @@
-import numpy as np
 import pickle
-import simulation as sim
-import controller as ctrl
 
+import controller as ctrl
+import simulation as sim
 
 if __name__ == '__main__':
     steady_state_pad = 1000

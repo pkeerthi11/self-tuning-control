@@ -1,7 +1,7 @@
 from math import floor
-import scipy.signal as signal
 
 import numpy as np
+import scipy.signal as signal
 
 constants_nevado_holgado_healthy = [
     6,  # 0:  tau1 [ms]
@@ -65,8 +65,8 @@ def single_simulation(constants, simulation_time, dt, control_mechanism, init_th
 
     # TODO: setup the initial state
     hlen = int(floor(max_delay / dt))
-    history[0:hlen+1, :2] = 20
-    history[0:hlen+1, 2] = init_theta
+    history[0:hlen + 1, :2] = 20
+    history[0:hlen + 1, 2] = init_theta
 
     d11 = int(floor(constants[6] / dt))
     d12 = int(floor(constants[7] / dt))

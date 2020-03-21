@@ -1,7 +1,8 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import pickle
 import pathlib
+import pickle
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 def single_plot(ax, f_range, ctx_range, data, input_amplitude, plot_color, alphas, grays, plot_loglog=True):
@@ -12,11 +13,11 @@ def single_plot(ax, f_range, ctx_range, data, input_amplitude, plot_color, alpha
             if plot_loglog:
                 ax.loglog(f_range, data[:, i, 1] / input_amplitude, color='#1f77b4', alpha=alphas[i])
                 ax.loglog(f_range, data[:, i, 2] / input_amplitude, color='#1f77b4', alpha=alphas[i],
-                           linestyle='--')
+                          linestyle='--')
             else:
                 ax.semilogx(f_range, data[:, i, 1] / input_amplitude, color='#1f77b4', alpha=alphas[i])
                 ax.semilogx(f_range, data[:, i, 2] / input_amplitude, color='#1f77b4', alpha=alphas[i],
-                          linestyle='--')
+                            linestyle='--')
         else:
             if plot_loglog:
                 ax.loglog(f_range, data[:, i, 1] / input_amplitude, color=grays[i])
@@ -30,7 +31,8 @@ def single_plot(ax, f_range, ctx_range, data, input_amplitude, plot_color, alpha
     ax.set_xlim([3, 100])
 
 
-def full_plot(f_range, ctx_range, stn_amplitude, gpe_amplitude, input_amplitude, plot_color, alphas, grays, plot_loglog):
+def full_plot(f_range, ctx_range, stn_amplitude, gpe_amplitude, input_amplitude, plot_color, alphas, grays,
+              plot_loglog):
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
 
     ax1.set_title('STN amplitude ratio')
