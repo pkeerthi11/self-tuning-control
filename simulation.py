@@ -55,7 +55,7 @@ def activation2(x, constants):
     return sigmoid(x, constants[12], constants[13])
 
 
-def single_simulation(constants, simulation_time, dt, control_mechanism, init_theta=40, mid_increase=0,
+def single_simulation(constants, simulation_time, dt, control_mechanism, init_state=[20, 20, 40], mid_increase=0,
                       mid_increase_amplitude=0, steady_state_pad=0):
     max_delay = max(constants[6:10])
     tt = np.arange(-max_delay, simulation_time + steady_state_pad, dt)
@@ -63,10 +63,8 @@ def single_simulation(constants, simulation_time, dt, control_mechanism, init_th
     control_history = np.zeros((len(tt),))
     input_history = np.zeros((len(tt),))
 
-    # TODO: setup the initial state
     hlen = int(floor(max_delay / dt))
-    history[0:hlen + 1, :2] = 20
-    history[0:hlen + 1, 2] = init_theta
+    history[0:hlen + 1, :] = init_state
 
     d11 = int(floor(constants[6] / dt))
     d12 = int(floor(constants[7] / dt))

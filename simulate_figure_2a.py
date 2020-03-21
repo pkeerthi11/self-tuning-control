@@ -30,13 +30,13 @@ if __name__ == "__main__":
             z = ZeroController()
             a = AdaptiveControllerFilter(0.1, 50, dt)
 
-            h2 = single_simulation(constants, simulation_time, dt, control_mechanism=z)
-            h3 = single_simulation(constants, simulation_time, dt, control_mechanism=a, init_theta=0)
+            history_zero = single_simulation(constants, simulation_time, dt, control_mechanism=z)
+            history_adaptive = single_simulation(constants, simulation_time, dt, control_mechanism=a, init_state=[20, 20, 0])
             tail_length = int(ceil(800 / dt))
-            stn_amplitude[i, ci, 1] = np.ptp(h2[-tail_length:, 0])
-            stn_amplitude[i, ci, 2] = np.ptp(h3[-tail_length:, 0])
-            gpe_amplitude[i, ci, 1] = np.ptp(h2[-tail_length:, 1])
-            gpe_amplitude[i, ci, 2] = np.ptp(h3[-tail_length:, 1])
+            stn_amplitude[i, ci, 1] = np.ptp(history_zero[-tail_length:, 0])
+            stn_amplitude[i, ci, 2] = np.ptp(history_adaptive[-tail_length:, 0])
+            gpe_amplitude[i, ci, 1] = np.ptp(history_zero[-tail_length:, 1])
+            gpe_amplitude[i, ci, 2] = np.ptp(history_adaptive[-tail_length:, 1])
     with open('simulation_results/results_figure_2a', 'wb+') as results_file:
         pickle.dump({
             'stn': stn_amplitude,

@@ -19,17 +19,17 @@ if __name__ == '__main__':
     sigma = 0.01
     mi = 10
     mia = 50
-    it = 0
+    it = [20, 20, 0]
     tau_theta = 5
     prop_theta = 25
 
     p_controller = ctrl.ProportionalController(gain=prop_theta, dt=dt)
     a_controller = ctrl.AdaptiveController(sigma=sigma, tau_theta=tau_theta, dt=dt)
     history_adaptive = sim.single_simulation(constants, simulation_time, dt, control_mechanism=a_controller,
-                                             init_theta=it, mid_increase=mi, mid_increase_amplitude=mia,
+                                             init_state=it, mid_increase=mi, mid_increase_amplitude=mia,
                                              steady_state_pad=steady_state_pad)
     history_proportional = sim.single_simulation(constants, simulation_time, dt, control_mechanism=p_controller,
-                                                 init_theta=prop_theta, mid_increase=mi, mid_increase_amplitude=mia,
+                                                 init_state=prop_theta, mid_increase=mi, mid_increase_amplitude=mia,
                                                  steady_state_pad=steady_state_pad)
 
     print('Saving simulation results')
