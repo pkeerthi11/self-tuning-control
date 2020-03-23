@@ -30,8 +30,9 @@ if __name__ == "__main__":
             z = ZeroController()
             a = AdaptiveControllerFilter(0.1, 50, dt)
 
-            history_zero = single_simulation(constants, simulation_time, dt, control_mechanism=z)
-            history_adaptive = single_simulation(constants, simulation_time, dt, control_mechanism=a, init_state=[20, 20, 0])
+            history_zero = single_simulation(constants, simulation_time, dt, control_mechanism=z, control_start=200)
+            history_adaptive = single_simulation(constants, simulation_time, dt, control_mechanism=a, control_start=200,
+                                                 init_state=[20, 20, 0])
             tail_length = int(ceil(800 / dt))
             stn_amplitude[i, ci, 1] = np.ptp(history_zero[-tail_length:, 0])
             stn_amplitude[i, ci, 2] = np.ptp(history_adaptive[-tail_length:, 0])

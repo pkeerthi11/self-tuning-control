@@ -55,13 +55,17 @@ def activation2(x, constants):
     return sigmoid(x, constants[12], constants[13])
 
 
-def single_simulation(constants, simulation_time, dt, control_mechanism, init_state=[20, 20, 40], mid_increase=0,
-                      mid_increase_amplitude=0, steady_state_pad=0):
+def single_simulation(constants, simulation_time, dt, control_mechanism, control_start=200, init_state=[20, 20, 40],
+                      mid_increase=(750, 0, 0), steady_state_pad=0):
     max_delay = max(constants[6:10])
     tt = np.arange(-max_delay, simulation_time + steady_state_pad, dt)
     history = np.zeros((len(tt), 3))
     control_history = np.zeros((len(tt),))
     input_history = np.zeros((len(tt),))
+
+    mi_t = mid_increase[0]
+    mi_mean = mid_increase[1]
+    mi_amplitude = mid_increase[2]
 
     hlen = int(floor(max_delay / dt))
     history[0:hlen + 1, :] = init_state
@@ -76,12 +80,12 @@ def single_simulation(constants, simulation_time, dt, control_mechanism, init_st
         state = history[i - 1]
 
         control1, grad_theta = control_mechanism(history[:i, :])
-        if t < 200 + steady_state_pad:
+        if t < control_start + steady_state_pad:
             control1, grad_theta = (0, 0)
 
         ampl_boost = 0
-        if mid_increase_amplitude > 0 and t > 750 + steady_state_pad:
-            ampl_boost = mid_increase_amplitude
+        if mi_amplitude > 0 and t > mi_t + steady_state_pad:
+            ampl_boost = mi_amplitude
 
         amplitude = constants[16] + ampl_boost
         f = constants[17]
@@ -91,9 +95,9 @@ def single_simulation(constants, simulation_time, dt, control_mechanism, init_st
 
         str_input = str_level
         ctx_input = ctx_level + oscillating_input
-        if mid_increase > 0:
-            if t > 750 + steady_state_pad:
-                ctx_input += mid_increase
+        if mi_mean > 0:
+            if t > mi_t + steady_state_pad:
+                ctx_input += mi_mean
         # TODO: calculate the inputs in a smart way
         inputs1 = constants[2] * history[i - 1 - d11, 0] + \
                   constants[3] * history[i - 1 - d12, 1] + constants[14] * ctx_input
