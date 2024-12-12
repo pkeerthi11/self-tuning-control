@@ -25,6 +25,25 @@ class ZeroController(Controller):
         return 0, 0
 
 
+# class ProportionalController(Controller):
+#     def __init__(self, gain, dt, omega=0.01):
+#         self.gain = gain
+#         self.w = 0
+#         self.omega = omega
+#         self.dt = dt
+
+#     def _update_w(self, state):
+#         self.w += self.omega * self.error_signal(state) * self.dt
+
+#     def error_signal(self, state):
+#         return state[0] - self.w
+
+#     def __call__(self, history):
+#         state = history[-1]
+#         self._update_w(state)
+#         input_signal = -self.gain * self.error_signal(state)
+#         return input_signal, 0
+
 class ProportionalController(Controller):
     def __init__(self, gain, dt, omega=0.01):
         self.gain = gain
@@ -43,6 +62,8 @@ class ProportionalController(Controller):
         self._update_w(state)
         input_signal = -self.gain * self.error_signal(state)
         return input_signal, 0
+
+
 
 
 class AdaptiveController(Controller):
@@ -71,7 +92,7 @@ class AdaptiveController(Controller):
         control_input = -gain * self.error_signal(state)
         self._update_w(state)
         return control_input, self.grad_theta(history)
-
+    
 
 class AdaptiveControllerFilter(AdaptiveController):
     def __init__(self, sigma, tau_theta, dt, tail_len=500, omega=0.1, deadzone=0):
@@ -107,3 +128,24 @@ class AdaptiveControllerFilter(AdaptiveController):
             control_input = -gain * (last_state[0] - self.w)
             self._update_w(last_state)
             return control_input, self.grad_theta(history)
+
+
+class MemoryLessController(Controller):
+    def __init__(self, gain, betas, dt, omega=0.01):
+        self.betas = betas
+        self.gain = gain
+        self.w = 0
+        self.omega = omega
+        self.dt = dt
+
+    def _update_w(self, state):
+        self.w += self.omega * self.error_signal(state) * self.dt
+
+    def error_signal(self, state):
+        return state[0] - self.w
+
+    def __call__(self, history):
+        state = history[-1]
+        self._update_w(state)
+        input_signal = -self.gain**2 * self.betas[0] * state[0] - self.gain * self.betas[0] * state[0] 
+        return input_signal, 0
