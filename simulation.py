@@ -113,3 +113,63 @@ def single_simulation(constants, simulation_time, dt, control_mechanism, control
         input_history[i] = oscillating_input
 
     return history
+
+
+def single_simulation_striatal(constants, simulation_time, dt, control_mechanism, control_start=200, init_state=[20, 20, 40],
+                      mid_increase=(750, 0, 0), steady_state_pad=0):
+    max_delay = max(constants[6:10])
+    tt = np.arange(-max_delay, simulation_time + steady_state_pad, dt)
+    history = np.zeros((len(tt), 3))
+    control_history = np.zeros((len(tt),))
+    input_history = np.zeros((len(tt),))
+
+    mi_t = mid_increase[0]
+    mi_mean = mid_increase[1]
+    mi_amplitude = mid_increase[2]
+
+    hlen = int(floor(max_delay / dt))
+    history[0:hlen + 1, :] = init_state
+
+    d11 = int(floor(constants[6] / dt))
+    d12 = int(floor(constants[7] / dt))
+    d21 = int(floor(constants[8] / dt))
+    d22 = int(floor(constants[9] / dt))
+    for i, t in enumerate(tt):
+        if t <= 0:
+            continue
+        state = history[i - 1]
+
+        control1, grad_theta = control_mechanism(history[:i, :])
+        if t < control_start + steady_state_pad:
+            control1, grad_theta = (0, 0)
+
+        ampl_boost = 0
+        if mi_amplitude > 0 and t > mi_t + steady_state_pad:
+            ampl_boost = mi_amplitude
+
+        amplitude = constants[16] + ampl_boost
+        f = constants[17]
+        ctx_level = constants[18]
+        str_level = constants[19]
+        oscillating_input = amplitude * np.sin(2 * np.pi * f * t / 1000)
+
+        str_input = str_level + oscillating_input
+        ctx_input = ctx_level 
+        if mi_mean > 0:
+            if t > mi_t + steady_state_pad:
+                str_input += mi_mean
+        # TODO: calculate the inputs in a smart way
+        inputs1 = constants[2] * history[i - 1 - d11, 0] + \
+                  constants[3] * history[i - 1 - d12, 1] + constants[14] * ctx_input
+        inputs2 = constants[4] * history[i - 1 - d21, 0] + \
+                  constants[5] * history[i - 1 - d22, 1] + constants[15] * str_input
+        grad = np.array([
+            1 / constants[0] * (-state[0] + activation1(inputs1 + control1, constants)),
+            1 / constants[1] * (-state[1] + activation2(inputs2, constants)),
+            grad_theta
+        ])
+        history[i] = history[i - 1] + grad * dt
+        control_history[i] = control1
+        input_history[i] = oscillating_input
+
+    return history
